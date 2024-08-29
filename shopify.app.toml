@@ -1,0 +1,33 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "472cce8bac2f1015d4b4206c41bd181a"
+name = "bulkkk-new"
+handle = "bulkkk-new-7"
+application_url = "https://survey-louise-private-pictures.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "desarrollo-the-bath.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://survey-louise-private-pictures.trycloudflare.com/auth/callback",
+  "https://survey-louise-private-pictures.trycloudflare.com/auth/shopify/callback",
+  "https://survey-louise-private-pictures.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks"
+
+[pos]
+embedded = false
