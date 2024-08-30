@@ -3,7 +3,7 @@
 client_id = "472cce8bac2f1015d4b4206c41bd181a"
 name = "bulkkk-new"
 handle = "bulkkk-new-7"
-application_url = "https://survey-louise-private-pictures.trycloudflare.com"
+application_url = "https://badly-stream-control-dynamics.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://survey-louise-private-pictures.trycloudflare.com/auth/callback",
-  "https://survey-louise-private-pictures.trycloudflare.com/auth/shopify/callback",
-  "https://survey-louise-private-pictures.trycloudflare.com/api/auth/callback"
+  "https://badly-stream-control-dynamics.trycloudflare.com/auth/callback",
+  "https://badly-stream-control-dynamics.trycloudflare.com/auth/shopify/callback",
+  "https://badly-stream-control-dynamics.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

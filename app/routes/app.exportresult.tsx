@@ -1,9 +1,10 @@
 import { ActionFunction, json, LoaderFunction } from "@remix-run/node";
-import { Page } from "@shopify/polaris";
-import { useLoaderData } from "@remix-run/react";
+import { Banner, Card, Layout, Page, ProgressBar } from "@shopify/polaris";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { authenticate } from "~/shopify.server";
+import { useEffect, useState } from "react";
 
-type BulkOperation = {
+type bulkOperation = {
     id: string;
     url: string;
     status: string;
@@ -60,18 +61,101 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 const ExportResult = () => {
-    const data = useLoaderData<BulkOperation | null>();
+    const data = useLoaderData<bulkOperation | null>();
 
     console.log('Loaded Data:', data);
 
-    if (!data) {
-        return <Page>No current bulk operation found.</Page>;
-    }
+
+    const [pollingData, setPollingData] = useState(data);
+    const [shouldPoll, setShouldPoll] = useState(true);
+
+    useEffect(() => setPollingData(data), [data])
+
+    const fetcher = useFetcher();
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+
+            if (document.visibilityState === 'visible' && shouldPoll) {
+                fetcher.load('/app/exportresult');
+            }
+
+
+        }, 10 * 1000)
+
+        return () => clearInterval(interval)
+    }, [shouldPoll, fetcher.load]);
+
+
+    useEffect(() => {
+        if (fetcher.data) {
+            setPollingData(fetcher.data as bulkOperation)
+        }
+
+        const { status } = fetcher.data as bulkOperation;
+
+        if (status === 'COMPLETED') {
+            setShouldPoll(false);
+            console.log("---------Polling stopped---------- ");
+
+        }
+
+
+    }, [fetcher.data])
+
+
+
 
     return (
         <Page>
-            <h1>Export Result</h1>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+            <ui-title-bar title="New Export">
+
+                <button variant="breadcrumb">Bulky</button>
+                <button onClick={() => { }}>Back</button>
+                <button variant="primary">Download Export</button>
+            </ui-title-bar>
+
+
+            {
+                pollingData.status === 'RUNNING' && <Layout>
+                    <Layout.Section>
+                        <Banner title="Export in Progress">
+                            <ProgressBar progress={75}></ProgressBar>
+                        </Banner>
+                        <br/>
+
+                        <Card>
+                            <p>in progress</p>
+                            <p>ID: {pollingData.id}</p>
+                            <p>STATUS: {pollingData.status}</p>
+                        </Card>
+                    </Layout.Section>
+                </Layout>
+
+
+            }
+
+{
+                pollingData.status === 'COMPLETED' && <Layout>
+                    <Layout.Section>
+                        <Banner title="Export Finished">
+                            <ProgressBar progress={100}></ProgressBar>
+                        </Banner>
+                        <br/>
+
+                        <Card>
+                            <p>in progress</p>
+                            <p>ID: {pollingData.id}</p>
+                            <p>STATUS: {pollingData.status}</p>
+                        </Card>
+                    </Layout.Section>
+                </Layout>
+
+
+            }
+
+
+
         </Page>
     );
 }
